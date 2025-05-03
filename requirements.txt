@@ -1,0 +1,17 @@
+# Core data processing
+dlt
+requests
+python-dotenv
+pytz
+
+# Spark related
+pyspark==3.5.*
+
+# Google Cloud related
+google-cloud-bigquery
+google-cloud-bigquery-storage
+google-cloud-storage
+dbt-bigquery
+
+# Database
+duckdb

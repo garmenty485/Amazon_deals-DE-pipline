@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# 日誌
+logs/
+deals_dbt/logs/
+deals_dbt/target/
+
+# Terraform
+terraform-bigquery/
+terraform-cloud-run/
+
+# 其他不必要
+*.git
+*.md
+*.log

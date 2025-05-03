@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: 3-0_cleaned_deals
+    description: "清洗后的Amazon deals数据，去除重复和无效记录"
+    columns:
+      - name: asin
+        description: "Amazon产品唯一标识符"
+        tests:
+          - unique
+          - not_null
+      - name: deal_price
+        description: "优惠价格"
+        tests:
+          - not_null
+          - positive_value:
+              min_value: 0
+      - name: percent_off
+        description: "折扣百分比"
+        tests:
+          - not_null
+          - positive_value:
+              min_value: 0
+              max_value: 100
+
+  - name: 3-1_brand_metrics
+    description: "各品牌的优惠统计数据"
+    columns:
+      - name: brand
+        description: "品牌名称"
+        tests:
+          - not_null
+          - unique
+      - name: total_deals
+        description: "优惠总数"
+        tests:
+          - positive_value:
+              min_value: 0
+
+  - name: 3-2_daily_summary
+    description: "每日优惠统计数据"
+    columns:
+      - name: deal_date
+        description: "优惠日期"
+      - name: deal_count
+        description: "优惠数量"
+        tests:
+          - positive_value:
+              min_value: 0

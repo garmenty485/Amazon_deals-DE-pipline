@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 環境變數和密鑰文件
+config.ini
+secrets.py
+**/secrets.toml
+**/*.json
+!package.json
+!package-lock.json
+*.pem
+*.key
+**/firstpj-data-engineer-*.json
+
+# DLT 文件
+.dlt/
+**/.dlt/
+
+# 數據庫文件
+*.db
+*.sqlite
+*.sqlite3
+*.duckdb
+*.duckdb.wal
+
+# Terraform 文件
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars.json
+.terraformrc
+terraform.rc
+**/.terraform.lock.hcl
+
+# 數據文件
+*.csv
+*.tsv
+*.json
+*.parquet
+*.avro
+rainforest_deals.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.code-workspace
+.history/
+
+# 日誌文件
+logs/
+*.log 
+
+# DBT 文件
+deals_dbt/target/

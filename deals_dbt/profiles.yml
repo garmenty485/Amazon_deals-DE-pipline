@@ -1,0 +1,18 @@
+config:
+  send_anonymous_usage_stats: False
+  use_colors: True
+
+deals_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: "{{ env_var('DLT_DATASET_NAME') }}"
+      threads: 1
+      keyfile: "{{ env_var('GCP_CREDENTIALS_PATH') }}"
+      timeout_seconds: 300
+      job_retries: 1
+      location: US
+      priority: interactive
