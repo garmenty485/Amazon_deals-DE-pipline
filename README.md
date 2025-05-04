@@ -100,4 +100,5 @@ it will be like this in Bigquery:
 
 ---
 
-For more details, please refer to the comments and documentation within each folder and script.
+Any issues, contact the author:
+https://www.linkedin.com/in/chia-ming-hu-683382255/?locale=zh_CN
