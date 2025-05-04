@@ -1,91 +1,103 @@
 # Amazon Deals DE Pipeline
 
-## 1. 本專案在幹嘛？
+## 1. What does this project do?
 
-本專案是一個自動化數據管道，從 Rainforest API 擷取 Amazon.de 的優惠商品資料，經過資料清洗、統計分析，最終將結果存入 Google BigQuery，並透過 dbt 進行進一步的數據建模與報表產出。整個流程可部署於 GCP（Google Cloud Platform），並支援自動化排程。
+This project is an automated data pipeline that fetches Amazon deals data from the Rainforest API, performs data cleaning and statistical analysis, and stores the results in Google BigQuery. It further utilizes dbt for advanced data modeling and reporting. The entire workflow can be deployed on GCP (Google Cloud Platform) and supports automated scheduling.
 
----
+It generates a original data table, a basic statistic table and 3 fact tables in your bigquery dataset at 9 am everyday. 
 
-## 2. 可以學習到的內容
-
-- 如何串接第三方 API 並自動化資料擷取
-- 使用 dlt 進行 ETL 管道建構與 BigQuery 整合
-- PySpark 進行大數據處理與統計分析
-- dbt 進行數據建模、資料清洗與自動化測試
-- GCP BigQuery、Cloud Run、Cloud Scheduler、GCS 等雲端服務的整合與自動化部署（含 Terraform 基礎）
-- Docker 化數據管道專案
-- .env 與 GCP 金鑰等敏感資訊管理
+![Untitled Diagram drawio](https://github.com/user-attachments/assets/419d7c76-9099-4395-a2e7-eed305b53779)
 
 ---
 
-## 3. 使用者先行設置
+## 2. What can you learn from this project?
 
-1. **GCP 金鑰與專案設定**
-   - 申請 GCP 專案，啟用 BigQuery、Cloud Run、Cloud Storage 等服務
-   - 建立 Service Account，下載金鑰檔（gcp-key.json），放置於專案根目錄
-   - 設定 BigQuery Dataset 與 GCS Bucket（可用 `terraform-bigquery/` 自動化建立）
+- How to connect to third-party APIs and automate data extraction
+- Building ETL pipelines with dlt and integrating with BigQuery
+- Using PySpark for data processing and statistical analysis
+- Data modeling, cleaning, and automated testing with dbt
+- Integrating and automating GCP services: BigQuery, Cloud Run, Cloud Scheduler, GCS (with Terraform basics)
+- Dockerizing a data pipeline project
 
-2. **.env 檔案設置**
-   - 於專案根目錄建立 `.env`，內容範例如下：
+Tools included: dlt, pyspark, dbt, BigQuery, Cloud Run, Cloud Scheduler, Terraform
+
+---
+
+## 3. Prerequisites & Setup
+
+1. **GCP Key and Project Setup**
+   - Create a GCP project and enable BigQuery, Cloud Run, Cloud Storage, etc.
+   - Create a Service Account, download the key file (rename it as `gcp-key.json`), and place it in the project root and deals_dbt/
+   - Register https://app.rainforestapi.com/login and get a api key
+   - .env is in both root and deals_dbt/, make sure you set both of them (set one of them and just copy it for the other)
+   - In both `terraform-bigquery/` and `terraform-cloud-run/`, you need to set terraform.tfvars and variables.tf that should be consistent with .env
+   - Create a GCP artifact registry repository (I didn't set it in terraform, you should do it manually)
+
+2. **.env File Setup**
+   - Create a `.env` file in the project root. Example:
      ```
-     RAINFOREST_API_KEY=你的RainforestAPI金鑰
-     GCP_PROJECT_ID=你的GCP專案ID
+     RAINFOREST_API_KEY=your_rainforest_api_key
+     GCP_PROJECT_ID=your_gcp_project_id
      DLT_DESTINATION_BIGQUERY_LOCATION=US
      DLT_PIPELINE_NAME=deals_pipeline
      DLT_DATASET_NAME=deals_dataset
      AMAZON_DOMAIN=amazon.de
      TIMEZONE=Europe/Berlin
      GCP_CREDENTIALS_PATH=./gcp-key.json
-     TEMP_GCS_BUCKET=你的GCS暫存桶名稱
+     TEMP_GCS_BUCKET=your_gcs_temp_bucket
      SPARK_JARS=./spark-3.5-bigquery-0.42.1.jar,./gcs-connector-hadoop3-latest.jar
-     HADOOP_HOME=（如需在Windows執行，請指定Hadoop路徑）
+     HADOOP_HOME=(set this if running on Windows)
      ```
-
-3. **安裝依賴**
+3. **Install Dependencies**
    - `pip install -r requirements.txt`
-   - 需安裝 Java（PySpark 需要）
+   - Java is required for PySpark
 
-4. **Docker 部署（可選）**
-   - `docker build -t amazon-deals-pipeline .`
-   - `docker run --env-file .env -v $(pwd)/gcp-key.json:/app/gcp-key.json amazon-deals-pipeline`
+4. **Try it locally**
+   - Run `project_run.py` to see if it has no error
 
-5. **Terraform 部署（可選）**
-   - 於 `terraform-bigquery/`、`terraform-cloud-run/` 依序 `terraform init`、`terraform apply`，自動建立 GCP 資源
+5. **Terraform Deployment**
+   - In `terraform-bigquery/`, run `terraform init` and `terraform apply` to build bigquery and temporary bucket (temporary bucket is for pyspark)
+   - `docker build -t us-central1-docker.pkg.dev/[PROJECT_ID]/[REPOSITORY]/[IMAGE]:[TAG] .` (this example is for us-central1, change it for yourself)
+   - `docker push us-central1-docker.pkg.dev/[PROJECT_ID]/[REPOSITORY]/[IMAGE]:[TAG]` (connect it to GCP cli first)
+   - In `terraform-cloud-runy/`, run `terraform init` and `terraform apply` to build a cloud-run job instance and a scheduler
 
----
-
-## 4. 個別檔案中值得特別留意學習的部分
-
-- `0_api_dlt_load.py`：  
-  - dlt 管道設計，動態表名、API 資料擷取與欄位結構設計
-  - 品牌名稱自動萃取（`extract_brands.py`）
-
-- `1_spark_process.py`：  
-  - PySpark 與 BigQuery 整合
-  - 多種統計指標一次性計算與寫入
-  - 動態表名與時區處理
-
-- `deals_dbt/`：  
-  - dbt 專案結構、資料清洗（去重、欄位轉換）、品牌與每日統計模型
-  - `schema.yml`：欄位測試設計，資料品質控管
-  - `run_dbt.py`：自動化 dbt clean/run/test
-
-- `terraform-bigquery/`、`terraform-cloud-run/`：  
-  - GCP BigQuery、GCS、Cloud Run、Cloud Scheduler 的自動化部署腳本
-
-- `dockerfile`：  
-  - 如何將 ETL 管道與 Spark、dbt、GCP 整合於單一容器
+3. **Try it in GCP Cloud-run-jobs**
+   - Run the job you just set and see if it has no error
+   - Check if the scheduler trigger the job when the time you set (default is 9 am)
 
 ---
 
-## 5. 最後的成果
+## 4. Noteworthy Parts
 
-- **自動化數據管道**：一鍵執行即可完成 Amazon.de 優惠資料的擷取、清洗、統計與報表產出
-- **BigQuery 數據集**：包含原始優惠資料、清洗後資料、品牌統計、每日統計等多張表
-- **dbt 報表**：可直接用於 BI 工具分析
-- **可雲端自動排程**：支援 GCP Cloud Run + Cloud Scheduler，每日自動執行
-- **可擴展性**：可輕鬆調整 API 來源、分析指標、資料模型，並支援多國 Amazon
+- `0_api_dlt_load.py`:  
+  - dlt pipeline design, dynamic table naming, API data extraction, and schema definition
+  - Brand name extraction logic (`extract_brands.py`)
+
+- `1_spark_process.py`:  
+  - PySpark integration with BigQuery
+  - Batch calculation and writing of multiple statistics
+  - Dynamic table naming and timezone handling
+
+- `deals_dbt/`:
+  - It generates fact tables 
+  - dbt project structure, data cleaning (deduplication, field transformation), brand and daily statistics models
+  - `schema.yml`: column tests for data quality control
+  - `run_dbt.py`: automated dbt clean/run/test
+
+- `terraform-bigquery/`, `terraform-cloud-run/`:  
+  - Automated deployment scripts for GCP BigQuery, GCS, Cloud Run, and Cloud Scheduler
+
+- `dockerfile`:  
+  - How to integrate ETL pipeline, Spark, dbt, and GCP in a single container
 
 ---
 
-如需更詳細的操作說明，請參考各資料夾內的註解與程式碼說明。
+## 5. Final Output
+
+it will be like this in Bigquery:
+![擷取](https://github.com/user-attachments/assets/e0087607-6b2a-4e85-b833-8e170791a1a1)
+
+
+---
+
+For more details, please refer to the comments and documentation within each folder and script.
