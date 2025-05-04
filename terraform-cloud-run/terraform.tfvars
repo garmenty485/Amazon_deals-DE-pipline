@@ -1,5 +1,7 @@
 project_id = "test-00-458409"  # Replace with your GCP project ID
 
+job_name = "ABC-job" # Name it
+
 # Region
 region = "us-central1"
 
