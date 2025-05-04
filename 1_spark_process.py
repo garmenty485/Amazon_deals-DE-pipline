@@ -18,9 +18,9 @@ os.environ['HADOOP_HOME'] = os.getenv("HADOOP_HOME", "C:\\hadoop")
 load_dotenv()
 
 # Get configuration from environment variables
-GCP_PROJECT_ID = "XXXXXX"
-BIGQUERY_DATASET = "XXXXXX"
-TEMP_GCS_BUCKET = "XXXXXX"
+GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
+BIGQUERY_DATASET = os.getenv("DLT_DATASET_NAME")
+TEMP_GCS_BUCKET = os.getenv("TEMP_GCS_BUCKET")
 TIMEZONE = os.getenv("TIMEZONE")
 SPARK_JARS = os.getenv("SPARK_JARS", "./spark-3.5-bigquery-0.42.1.jar,./gcs-connector-hadoop3-latest.jar")
 
