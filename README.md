@@ -2,7 +2,7 @@
 
 ## 1. What does this project do?
 
-This project is an automated data pipeline that fetches Amazon deals data from the Rainforest API, performs data cleaning and statistical analysis, and stores the results in Google BigQuery. It further utilizes dbt for advanced data modeling and reporting. The entire workflow can be deployed on GCP (Google Cloud Platform) and supports automated scheduling.
+This project is an automated data pipeline that fetches Amazon deals data from the Rainforest API, performs data cleaning and statistical analysis, and stores the results in Google BigQuery. It further utilizes dbt for data modeling. The entire workflow can be deployed on GCP (Google Cloud Platform) and supports automated scheduling.
 
 It generates a original data table, a basic statistic table and 3 fact tables in your bigquery dataset at 9 am everyday. 
 
