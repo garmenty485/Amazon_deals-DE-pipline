@@ -34,7 +34,7 @@ Tools included: dlt, pyspark, dbt, BigQuery, Cloud Run, Cloud Scheduler, Terrafo
    - Create a GCP artifact registry repository (I didn't set it in terraform, you should do it manually)
 
 2. **.env File Setup**
-   - Create a `.env` file in the project root. Example:
+   - Create a `.env` file in the project root and `deals_dbt/`. Example:
      ```
      RAINFOREST_API_KEY=your_rainforest_api_key
      GCP_PROJECT_ID=your_gcp_project_id
