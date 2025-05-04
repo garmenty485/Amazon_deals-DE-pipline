@@ -17,14 +17,14 @@ provider "google" {
 
 # Create BigQuery dataset
 resource "google_bigquery_dataset" "test_set" {
-  dataset_id  = "XXXXXX"
-  location    = "XXXXXX"
+  dataset_id  = var.bigquery_dataset_id
+  location    = var.bigquery_location
   description = "XXXXXX"
 }
 
 # Create GCS bucket
 resource "google_storage_bucket" "test_bucket" {
-  name                        = "XXXXXX"
-  location                    = "XXXXXX"
+  name                        = var.gcs_bucket_name
+  location                    = var.bigquery_location
   uniform_bucket_level_access = var.gcs_uniform_bucket_level_access
 }
