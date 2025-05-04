@@ -29,7 +29,7 @@ Tools included: dlt, pyspark, dbt, BigQuery, Cloud Run, Cloud Scheduler, Terrafo
    - Create a GCP project and enable BigQuery, Cloud Run, Cloud Storage, etc.
    - Create a Service Account, download the key file (rename it as `gcp-key.json`), and place it in the project root and deals_dbt/
    - Register https://app.rainforestapi.com/login and get a api key
-   - .env is in both root and deals_dbt/, make sure you set both of them (set one of them and just copy it for the other)
+   - .env is in both root and `deals_dbt/`, make sure you set both of them (set one of them and just copy it for the other)
    - In both `terraform-bigquery/` and `terraform-cloud-run/`, you need to set terraform.tfvars and variables.tf that should be consistent with .env
    - Create a GCP artifact registry repository (I didn't set it in terraform, you should do it manually)
 
